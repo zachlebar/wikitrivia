@@ -6,25 +6,21 @@ import { checkCorrect, getRandomItem, preloadImage } from "../lib/items";
 import NextItemList from "./next-item-list";
 import PlayedItemList from "./played-item-list";
 import styles from "../styles/board.module.scss";
-import Hearts from "./hearts";
 import GameOver from "./game-over";
 
 interface Props {
-  highscore: number;
   resetGame: () => void;
   state: GameState;
   setState: (state: GameState) => void;
-  updateHighscore: (score: number) => void;
 }
 
 export default function Board(props: Props) {
-  const { highscore, resetGame, state, setState, updateHighscore } = props;
+  const { resetGame, state, setState } = props;
 
   const [isDragging, setIsDragging] = React.useState(false);
 
   async function onDragStart() {
     setIsDragging(true);
-    navigator.vibrate(20);
   }
 
   async function onDragEnd(result: DropResult) {
@@ -110,12 +106,6 @@ export default function Board(props: Props) {
     return state.played.filter((item) => item.played.correct).length - 1;
   }, [state.played]);
 
-  React.useLayoutEffect(() => {
-    if (score > highscore) {
-      updateHighscore(score);
-    }
-  }, [score, highscore, updateHighscore]);
-
   return (
     <DragDropContext
       onDragEnd={onDragEnd}
@@ -124,17 +114,12 @@ export default function Board(props: Props) {
     >
       <div className={styles.wrapper}>
         <div className={styles.top}>
-          <Hearts lives={state.lives} />
-          {state.lives > 0 ? (
+          {state.lives > 0 && score < 10 ? (
             <>
               <NextItemList next={state.next} />
             </>
           ) : (
-            <GameOver
-              highscore={highscore}
-              resetGame={resetGame}
-              score={score}
-            />
+            <GameOver resetGame={resetGame} score={score} />
           )}
         </div>
         <div id="bottom" className={styles.bottom}>

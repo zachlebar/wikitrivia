@@ -5,13 +5,12 @@ import Button from "./button";
 import Score from "./score";
 
 interface Props {
-  highscore: number;
   resetGame: () => void;
   score: number;
 }
 
 export default function GameOver(props: Props) {
-  const { highscore, resetGame, score } = props;
+  const { resetGame, score } = props;
 
   const animProps = useSpring({
     opacity: 1,
@@ -23,10 +22,7 @@ export default function GameOver(props: Props) {
     <animated.div style={animProps} className={styles.gameOver}>
       <div className={styles.scoresWrapper}>
         <div className={styles.score}>
-          <Score score={score} title="Streak" />
-        </div>
-        <div className={styles.score}>
-          <Score score={highscore} title="Best streak" />
+          <Score score={score} title={score === 10 ? "You won!" : "Score"} />
         </div>
       </div>
       <Button onClick={resetGame} text="Play again!" />
